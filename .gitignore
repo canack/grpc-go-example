@@ -1,0 +1,4 @@
+.idea
+services/order/order-service
+services/gateway/gateway-service
+services/customer/customer-service
