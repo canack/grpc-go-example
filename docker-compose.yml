@@ -1,0 +1,56 @@
+version: "3.7"
+
+services:
+  dynamodbLocal:
+    container_name: "ddblocal"
+    command: "-jar DynamoDBLocal.jar -sharedDb"
+    image: amazon/dynamodb-local
+    restart: always
+    networks:
+      - serviceNet
+#    ports:
+#      - "8000:8000"
+
+  customer:
+    container_name: "customerService"
+    build:
+      context: .
+      dockerfile: customer.Dockerfile
+    depends_on:
+      - "dynamodbLocal"
+    restart: always
+    networks:
+      - serviceNet
+  #    ports:
+#      - "50052:50052"
+
+  order:
+    container_name: "orderService"
+    build:
+      context: .
+      dockerfile: order.Dockerfile
+    depends_on:
+      - "dynamodbLocal"
+    restart: always
+    networks:
+      - serviceNet
+#    ports:
+#      - "50051:50051"
+
+  endpoint:
+    container_name: "gatewayService"
+    build:
+      context: .
+      dockerfile: gateway.Dockerfile
+    depends_on:
+      - "customer"
+      - "order"
+    restart: always
+    networks:
+      - serviceNet
+    ports:
+      - "3434:3434"
+
+networks:
+  serviceNet:
+    driver: bridge
