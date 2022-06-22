@@ -1,0 +1,489 @@
+definitions:
+  types.Address:
+    properties:
+      addressLine:
+        example: x street, y apartment, number:5/7
+        type: string
+      city:
+        example: New york
+        type: string
+      cityCode:
+        example: 45
+        type: integer
+      country:
+        example: United States
+        type: string
+    type: object
+  types.Customer:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      createdAt:
+        example: "2022-05-23T09:45:01.675884703Z"
+        type: string
+      customerUUID:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        example: "2022-05-23T09:55:04.995285414Z"
+        type: string
+    type: object
+  types.CustomerRequestCreate:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      email:
+        example: johndoe@example.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  types.CustomerRequestUpdate:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      email:
+        example: johndoe@example.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  types.Order:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      createdAt:
+        example: "2022-05-23T09:45:01.675884703Z"
+        type: string
+      customerUUID:
+        type: string
+      orderUUID:
+        type: string
+      price:
+        type: number
+      product:
+        $ref: '#/definitions/types.Product'
+      quantity:
+        type: integer
+      status:
+        type: string
+      updatedAt:
+        example: "2022-05-23T09:55:04.995285414Z"
+        type: string
+    type: object
+  types.OrderRequestCreate:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      customerUUID:
+        example: 190edd4b-a89c-4f74-b7e0-256645fd0373
+        type: string
+      price:
+        example: 49.99
+        type: number
+      product:
+        $ref: '#/definitions/types.Product'
+      quantity:
+        example: 2
+        type: integer
+      status:
+        example: New order
+        type: string
+    type: object
+  types.OrderRequestUpdate:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      price:
+        example: 69.99
+        type: number
+      product:
+        $ref: '#/definitions/types.Product'
+      quantity:
+        example: 3
+        type: integer
+      status:
+        example: Preparing
+        type: string
+    type: object
+  types.OrderRequestUpdateStatus:
+    properties:
+      status:
+        example: Shipped
+        type: string
+    type: object
+  types.Product:
+    properties:
+      imageUrl:
+        example: https://example.com/product.jpg
+        type: string
+      name:
+        example: Toy car
+        type: string
+      productUUID:
+        example: 455avd4b-x22z-2554-z88m-0amz8552
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Interactive documentation for Order & Customer services
+  title: Customer & Order gRPC services
+  version: "1.0"
+paths:
+  /customer/:
+    get:
+      consumes:
+      - application/json
+      description: Returns all customers as json array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/types.Customer'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Returns all customers
+      tags:
+      - customer
+    post:
+      consumes:
+      - application/json
+      description: Creates a new customer and returns the customer's UUIDv4
+      parameters:
+      - description: Customer info
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/types.CustomerRequestCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "502":
+          description: Bad Gateway
+          schema:
+            type: string
+      summary: Creates a new customer
+      tags:
+      - customer
+  /customer/{UUIDv4}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes the customer and returns boolean
+      parameters:
+      - description: Customer UUIDv4
+        in: path
+        name: UUIDv4
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Deletes the customer
+      tags:
+      - customer
+    get:
+      consumes:
+      - application/json
+      description: Returns customer data as json with given UUIDv4
+      parameters:
+      - description: Customer UUIDv4
+        in: path
+        name: UUIDv4
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Returns customer data with given UUIDv4
+      tags:
+      - customer
+    put:
+      consumes:
+      - application/json
+      description: Updates customer's info and returns boolean
+      parameters:
+      - description: Customer UUIDv4
+        in: path
+        name: UUIDv4
+        required: true
+        type: string
+      - description: Customer info
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/types.CustomerRequestUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Updates customer's info
+      tags:
+      - customer
+  /customer/validate/{UUIDv4}:
+    get:
+      consumes:
+      - application/json
+      description: Checks if the customer is in the database and returns boolean
+      parameters:
+      - description: Customer UUIDv4
+        in: path
+        name: UUIDv4
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Checks if the customer is in the database
+      tags:
+      - customer
+  /generate:
+    get:
+      consumes:
+      - application/json
+      description: Creates test database records for orders and customers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Creates test database records for orders and customers
+      tags:
+      - Database operations
+  /order/:
+    get:
+      consumes:
+      - application/json
+      description: Returns all orders as json array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/types.Order'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Returns all orders
+      tags:
+      - order
+    post:
+      consumes:
+      - application/json
+      description: Creates a new order and returns the order's UUIDv4
+      parameters:
+      - description: Order info
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/types.OrderRequestCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "502":
+          description: Bad Gateway
+          schema:
+            type: string
+      summary: Creates a new order
+      tags:
+      - order
+  /order/{UUIDv4}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes the order and returns boolean
+      parameters:
+      - description: Order UUIDv4
+        in: path
+        name: UUIDv4
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Deletes the order
+      tags:
+      - order
+    get:
+      consumes:
+      - application/json
+      description: Returns order data as json with given UUIDv4
+      parameters:
+      - description: Order UUIDv4
+        in: path
+        name: UUIDv4
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Order'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Returns order data with given UUIDv4
+      tags:
+      - order
+    patch:
+      consumes:
+      - application/json
+      description: Updates order's status and returns boolean
+      parameters:
+      - description: Order UUIDv4
+        in: path
+        name: UUIDv4
+        required: true
+        type: string
+      - description: Order status
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/types.OrderRequestUpdateStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Updates order's status
+      tags:
+      - order
+    put:
+      consumes:
+      - application/json
+      description: Updates order's info and returns boolean
+      parameters:
+      - description: Order UUIDv4
+        in: path
+        name: UUIDv4
+        required: true
+        type: string
+      - description: Order info
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/types.OrderRequestUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Updates order's info
+      tags:
+      - order
+  /reset:
+    get:
+      consumes:
+      - application/json
+      description: Deletes test database records for orders and customers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Deletes test database records for orders and customers
+      tags:
+      - Database operations
+swagger: "2.0"

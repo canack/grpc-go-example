@@ -1,0 +1,732 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Interactive documentation for Order \u0026 Customer services",
+        "title": "Customer \u0026 Order gRPC services",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/customer/": {
+            "get": {
+                "description": "Returns all customers as json array",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Returns all customers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.Customer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new customer and returns the customer's UUIDv4",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Creates a new customer",
+                "parameters": [
+                    {
+                        "description": "Customer info",
+                        "name": "customer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CustomerRequestCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "502": {
+                        "description": "Bad Gateway",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/customer/validate/{UUIDv4}": {
+            "get": {
+                "description": "Checks if the customer is in the database and returns boolean",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Checks if the customer is in the database",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer UUIDv4",
+                        "name": "UUIDv4",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/customer/{UUIDv4}": {
+            "get": {
+                "description": "Returns customer data as json with given UUIDv4",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Returns customer data with given UUIDv4",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer UUIDv4",
+                        "name": "UUIDv4",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Customer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Updates customer's info and returns boolean",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Updates customer's info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer UUIDv4",
+                        "name": "UUIDv4",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Customer info",
+                        "name": "customer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CustomerRequestUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes the customer and returns boolean",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Deletes the customer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer UUIDv4",
+                        "name": "UUIDv4",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/generate": {
+            "get": {
+                "description": "Creates test database records for orders and customers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Database operations"
+                ],
+                "summary": "Creates test database records for orders and customers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/": {
+            "get": {
+                "description": "Returns all orders as json array",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Returns all orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.Order"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new order and returns the order's UUIDv4",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Creates a new order",
+                "parameters": [
+                    {
+                        "description": "Order info",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.OrderRequestCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "502": {
+                        "description": "Bad Gateway",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/{UUIDv4}": {
+            "get": {
+                "description": "Returns order data as json with given UUIDv4",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Returns order data with given UUIDv4",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order UUIDv4",
+                        "name": "UUIDv4",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Updates order's info and returns boolean",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Updates order's info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order UUIDv4",
+                        "name": "UUIDv4",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Order info",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.OrderRequestUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes the order and returns boolean",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Deletes the order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order UUIDv4",
+                        "name": "UUIDv4",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Updates order's status and returns boolean",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Updates order's status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order UUIDv4",
+                        "name": "UUIDv4",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Order status",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.OrderRequestUpdateStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/reset": {
+            "get": {
+                "description": "Deletes test database records for orders and customers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Database operations"
+                ],
+                "summary": "Deletes test database records for orders and customers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "types.Address": {
+            "type": "object",
+            "properties": {
+                "addressLine": {
+                    "type": "string",
+                    "example": "x street, y apartment, number:5/7"
+                },
+                "city": {
+                    "type": "string",
+                    "example": "New york"
+                },
+                "cityCode": {
+                    "type": "integer",
+                    "example": 45
+                },
+                "country": {
+                    "type": "string",
+                    "example": "United States"
+                }
+            }
+        },
+        "types.Customer": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2022-05-23T09:45:01.675884703Z"
+                },
+                "customerUUID": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2022-05-23T09:55:04.995285414Z"
+                }
+            }
+        },
+        "types.CustomerRequestCreate": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "johndoe@example.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                }
+            }
+        },
+        "types.CustomerRequestUpdate": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "johndoe@example.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                }
+            }
+        },
+        "types.Order": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2022-05-23T09:45:01.675884703Z"
+                },
+                "customerUUID": {
+                    "type": "string"
+                },
+                "orderUUID": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "product": {
+                    "$ref": "#/definitions/types.Product"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2022-05-23T09:55:04.995285414Z"
+                }
+            }
+        },
+        "types.OrderRequestCreate": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "customerUUID": {
+                    "type": "string",
+                    "example": "190edd4b-a89c-4f74-b7e0-256645fd0373"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 49.99
+                },
+                "product": {
+                    "$ref": "#/definitions/types.Product"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "status": {
+                    "type": "string",
+                    "example": "New order"
+                }
+            }
+        },
+        "types.OrderRequestUpdate": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 69.99
+                },
+                "product": {
+                    "$ref": "#/definitions/types.Product"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 3
+                },
+                "status": {
+                    "type": "string",
+                    "example": "Preparing"
+                }
+            }
+        },
+        "types.OrderRequestUpdateStatus": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "Shipped"
+                }
+            }
+        },
+        "types.Product": {
+            "type": "object",
+            "properties": {
+                "imageUrl": {
+                    "type": "string",
+                    "example": "https://example.com/product.jpg"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Toy car"
+                },
+                "productUUID": {
+                    "type": "string",
+                    "example": "455avd4b-x22z-2554-z88m-0amz8552"
+                }
+            }
+        }
+    }
+}
