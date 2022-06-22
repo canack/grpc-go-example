@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+option go_package = "github.com/canack/grpc-example-go/services/grpc";
+
+package grpc;
+
+service Microservice {
+  rpc Create (RequestCreate) returns (ReplyCreate) {}
+  rpc Get (RequestGet) returns (ReplyGet) {}
+  rpc Update (RequestUpdate) returns (ReplyUpdate) {}
+  rpc Delete (RequestDelete) returns (ReplyDelete) {}
+  rpc ChangeStatus (RequestChangeStatus) returns (ReplyChangeStatus) {}
+  rpc Validate (RequestValidate) returns (ReplyValidate) {}
+
+  // For generating test data
+  rpc CreateTestData (RequestTestData) returns (ReplyTestData) {}
+  rpc DeleteTestData (RequestTestData) returns (ReplyTestData) {}
+}
+
+// Request Model
+message RequestCreate {
+  bytes Data = 1;
+}
+
+message RequestUpdate {
+  bytes Data = 1;
+}
+
+message RequestDelete {
+  string UUID = 1;
+}
+
+message RequestGet {
+  string UUID = 1;
+}
+
+message RequestChangeStatus {
+  string UUID = 1;
+  string NewStatus = 2;
+}
+
+message RequestValidate {
+  string UUID = 1;
+}
+
+message RequestTestData {
+}
+
+// Request Model
+
+
+// Reply Model
+
+message ReplyCreate {
+  string UUID = 1;
+  bool Status = 2;
+}
+
+message ReplyUpdate {
+  bool Status = 1 ;
+}
+
+message ReplyDelete {
+  bool Status = 1;
+}
+
+message ReplyGet {
+  bytes Data = 1;
+}
+
+message ReplyChangeStatus {
+  bool Status = 1;
+}
+
+message ReplyValidate {
+  bool Status = 1;
+}
+
+message ReplyTestData {
+}
+// Reply Model
